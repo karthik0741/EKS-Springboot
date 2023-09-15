@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petclinic
+spec:
+  selector:
+    matchLabels:
+      app: petclinic
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: petclinic
+    spec:
+      containers:
+      - name: petclinic
+        image: karthik0741/images:Aug13
+        ports:
+        - containerPort: 8080
+        env: # Setting Enviornmental Variables
+        - name: MYSQL_URL # Setting Database host address from configMap
+          valueFrom:
+            configMapKeyRef:
+              name: configmap
+              key: MYSQL_URL
+
+        - name: MYSQL_DATABASE # Setting Database name from configMap
+          valueFrom:
+            configMapKeyRef:
+              name: configmap
+              key: MYSQL_DATABASE
+
+        - name: MYSQL_USER # Setting Database username from configMap
+          valueFrom:
+            configMapKeyRef:
+              name: configmap
+              key: MYSQL_USER
+
+        - name: MYSQL_PASSWORD # Setting Database password from Secret
+          valueFrom:
+            secretKeyRef:
+              name: secret-petclinic
+              key: MYSQL_PASSWORD
